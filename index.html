@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday 🤍</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#e6b85c;--pink:#ff4fa8;--bg:#050008;--serif:"Cinzel",Georgia,serif;--script:"Great Vibes",cursive}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
+#bg{position:fixed;inset:0;z-index:0}
+
+/* VIEW */
+.view{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px;text-align:center;opacity:0;visibility:hidden;transition:opacity .6s,visibility .6s}
+.view.active{opacity:1;visibility:visible}
+.gold{font-family:var(--serif);color:var(--gold);letter-spacing:.12em;text-shadow:0 0 14px rgba(230,184,92,.6)}
+.script{font-family:var(--script);color:#ffd6f2;text-shadow:0 0 12px var(--pink),0 0 30px #a844ff}
+button{font-family:var(--serif);cursor:pointer;color:#fff;background:rgba(255,79,168,.12);border:1px solid var(--pink);border-radius:30px;padding:10px 22px;font-size:.8rem;letter-spacing:.08em;box-shadow:0 0 14px rgba(255,79,168,.35)}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+/* LOCK */
+.lock-card{width:min(86vw,330px);padding:26px 22px;border-radius:26px;background:rgba(15,5,10,.78);border:1px solid var(--gold);box-shadow:0 0 26px rgba(230,184,92,.45)}
+.lock-card h1{font-size:1.7rem;line-height:1.2;margin:8px 0 6px}
+.lock-card .hint{font-size:.75rem;color:#cbb;margin-bottom:14px}
+.lock-card.open{animation:open .7s forwards}
+.lock-card.shake{animation:shake .4s}
+.dots{display:flex;justify-content:center;gap:10px;margin-bottom:18px}
+.dots i{width:12px;height:12px;border-radius:50%;border:1px solid var(--gold)}
+.dots i.on{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.pad{display:grid;grid-template-columns:repeat(3,58px);gap:12px;justify-content:center}
+.pad button{width:58px;height:58px;padding:0;font-size:1.2rem;border-radius:50%;border-color:var(--gold);background:rgba(255,255,255,.05);box-shadow:none}
+.pad button:active{background:rgba(230,184,92,.3)}
+
+/* COUNTER */
+.counter{display:flex;gap:6px;width:min(94vw,430px);justify-content:center}
+.box{flex:1;max-width:64px;padding:10px 0 7px;border-radius:10px;border:1px solid var(--gold);background:rgba(20,6,12,.7);box-shadow:0 0 12px rgba(230,184,92,.35)}
+.box b{display:block;font:700 1.5rem var(--serif);color:#fff}
+.box small{font-size:.5rem;letter-spacing:.08em;color:var(--gold)}
+.btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+
+/* GALERI */
+.carousel{position:relative;width:min(92vw,420px);height:270px;perspective:900px}
+.card{position:absolute;left:50%;top:0;width:150px;height:230px;margin-left:-75px;border-radius:12px;border:2px solid var(--gold);overflow:hidden;background:linear-gradient(160deg,#4a1240,#150020);box-shadow:0 0 20px rgba(230,184,92,.5);transition:transform .5s,opacity .5s}
+.card span{position:absolute;inset:0;display:grid;place-items:center;font-size:3rem}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.nav{display:flex;gap:16px}
+.nav button{width:46px;height:46px;padding:0;font-size:1.3rem;border-radius:50%}
+
+/* SURAT */
+.paper{width:min(90vw,430px);min-height:330px;padding:22px;text-align:left;border:1px solid var(--gold);border-radius:6px;background:rgba(18,4,10,.82);box-shadow:0 0 22px rgba(230,184,92,.4)}
+#typed{white-space:pre-wrap;font-size:.92rem;line-height:1.8;min-height:250px}
+.sign{text-align:right;font:2rem var(--script);color:var(--gold)}
+
+@keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+@keyframes open{to{transform:scale(1.15);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<audio id="music" loop><source src="romantis.mp3" type="audio/mpeg"></audio>
+
+<!-- 1. LAYAR KUNCI -->
+<section class="view active" id="lock">
+  <div class="lock-card" id="lockCard">
+    <div style="font-size:2rem">🔒</div>
+    <h1 class="gold">HAPPY<br>BIRTHDAY</h1>
+    <p class="hint">Masukkan tanggal lahirmu (tanggal-bulan-tahun, 6 angka)</p>
+    <div class="dots" id="dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="pad" id="pad"></div>
+  </div>
+</section>
+
+<!-- 2. HALAMAN UTAMA -->
+<section class="view" id="home">
+  <h2 class="script" style="font-size:2.6rem">Sweet Seventeen Babe 💖</h2>
+  <h1 class="gold" style="font-size:1.3rem">UMURMU SEKARANG</h1>
+  <div class="counter" id="counter"></div>
+  <p class="gold" style="font-size:.8rem">sejak 27-10-2009</p>
+  <div class="btns">
+    <button data-go="gallery">LIHAT KENANGAN</button>
+    <button data-go="letter">BACA SURAT</button>
+  </div>
+</section>
+
+<!-- 3. KENANGAN -->
+<section class="view" id="gallery">
+  <h1 class="gold" style="font-size:1.6rem">KENANGAN</h1>
+  <div class="carousel" id="carousel"></div>
+  <div class="nav"><button id="prev">‹</button><button id="next">›</button></div>
+  <button data-go="home">KEMBALI</button>
+</section>
+
+<!-- 4. SURAT -->
+<section class="view" id="letter">
+  <div class="paper"><p id="typed"></p><div class="sign">Love You</div></div>
+  <button data-go="home">KEMBALI</button>
+</section>
+
+<script>
+/* ===== PENGATURAN ===== */
+const KATA_SANDI = "271009";             // ganti sandi di sini
+const LAHIR = new Date(2009, 9, 27);     // 27 Oktober 2009 (bulan mulai dari 0)
+const FOTO = ["foto1.jpg", "foto2.jpg", "foto3.jpg"];   // taruh fotomu di folder yang sama
+const SURAT =
+`Untuk Muhammad Rifky Saputra,
+
+Selamat ulang tahun yang ke-17, Babe. Terima kasih sudah menjadi tempat pulangku, di setiap tawa dan di setiap diam yang kita lewati bersama.
+
+Semoga di usia yang baru ini kamu selalu sehat, bahagia, dan semua impian yang kamu simpan perlahan menjadi kenyataan.
+
+Jangan pernah berhenti menjadi versi terbaik dari dirimu, dan jangan pernah berhenti menyayangiku ya.
+
+Happy Birthday, Sweet Seventeen Babe 🤍`;
+
+/* ===== PERPINDAHAN HALAMAN ===== */
+let typer = null;
+function go(id) {
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === id));
+  clearInterval(typer);
+  if (id === "letter") typeLetter();
+}
+document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+
+/* ===== LAYAR KUNCI ===== */
+let input = "";
+const dots = document.querySelectorAll("#dots i");
+const card = document.getElementById("lockCard");
+const pad = document.getElementById("pad");
+
+["1","2","3","4","5","6","7","8","9","C","0","⌫"].forEach(k => {
+  const b = document.createElement("button");
+  b.textContent = k;
+  b.onclick = () => press(k);
+  pad.appendChild(b);
+});
+
+function press(k) {
+  if (!document.getElementById("lock").classList.contains("active")) return;
+  if (k === "C") input = "";
+  else if (k === "⌫") input = input.slice(0, -1);
+  else if (input.length < 6) input += k;
+  dots.forEach((d, i) => d.classList.toggle("on", i < input.length));
+  if (input.length === 6) setTimeout(check, 200);
+}
+
+function check() {
+  if (input === KATA_SANDI) {
+    card.classList.add("open");
+    document.getElementById("music").play().catch(() => {});
+    setTimeout(() => go("home"), 700);
+  } else {
+    card.classList.add("shake");
+    setTimeout(() => card.classList.remove("shake"), 400);
+    input = "";
+    dots.forEach(d => d.classList.remove("on"));
+  }
+}
+document.addEventListener("keydown", e => {
+  if (/^\d$/.test(e.key)) press(e.key);
+  else if (e.key === "Backspace") press("⌫");
+});
+
+/* ===== COUNTER UMUR ===== */
+const labels = ["TAHUN", "BULAN", "HARI", "JAM", "MENIT", "DETIK"];
+const counter = document.getElementById("counter");
+labels.forEach(l => counter.insertAdjacentHTML("beforeend", `<div class="box"><b>0</b><small>${l}</small></div>`));
+const nums = counter.querySelectorAll("b");
+
+function tick() {
+  const n = new Date();
+  let y = n.getFullYear() - LAHIR.getFullYear();
+  let m = n.getMonth() - LAHIR.getMonth();
+  let d = n.getDate() - LAHIR.getDate();
+  let h = n.getHours(), mi = n.getMinutes(), s = n.getSeconds();
+  if (d < 0) { d += new Date(n.getFullYear(), n.getMonth(), 0).getDate(); m--; }
+  if (m < 0) { m += 12; y--; }
+  [y, m, d, h, mi, s].forEach((v, i) => nums[i].textContent = v);
+}
+tick();
+setInterval(tick, 1000);
+
+/* ===== GALERI 3D ===== */
+const carousel = document.getElementById("carousel");
+let cur = 0;
+FOTO.forEach((src, i) => {
+  const c = document.createElement("div");
+  c.className = "card";
+  c.innerHTML = `<span>🤍</span><img src="${src}" alt="" onerror="this.remove()">`;
+  c.onclick = () => { cur = i; layout(); };
+  carousel.appendChild(c);
+});
+function layout() {
+  const n = FOTO.length;
+  [...carousel.children].forEach((c, i) => {
+    const o = (i - cur + n) % n;
+    let t = "translateX(0) scale(1)", z = 3, op = 1;
+    if (o === 1) { t = "translateX(65%) rotateY(-35deg) scale(.8)"; z = 2; }
+    else if (o === n - 1) { t = "translateX(-65%) rotateY(35deg) scale(.8)"; z = 2; }
+    else if (o !== 0) { op = 0; }
+    c.style.transform = t; c.style.zIndex = z; c.style.opacity = op;
+  });
+}
+document.getElementById("next").onclick = () => { cur = (cur + 1) % FOTO.length; layout(); };
+document.getElementById("prev").onclick = () => { cur = (cur - 1 + FOTO.length) % FOTO.length; layout(); };
+layout();
+
+/* ===== SURAT MENGETIK ===== */
+function typeLetter() {
+  const el = document.getElementById("typed");
+  el.textContent = "";
+  let i = 0;
+  typer = setInterval(() => {
+    el.textContent += SURAT[i++];
+    if (i >= SURAT.length) clearInterval(typer);
+  }, 45);
+}
+
+/* ===== LATAR: BINTANG + HATI ===== */
+const cv = document.getElementById("bg"), cx = cv.getContext("2d");
+let W, H;
+function size() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+addEventListener("resize", size); size();
+const items = [];
+for (let i = 0; i < 90; i++) items.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.4 + .3, t: Math.random() * 6 });
+for (let i = 0; i < 14; i++) items.push({ heart: 1, x: Math.random() * W, y: Math.random() * H, sz: 10 + Math.random() * 16, v: .3 + Math.random() * .6 });
+function draw() {
+  cx.clearRect(0, 0, W, H);
+  items.forEach(p => {
+    if (p.heart) {
+      p.y -= p.v; if (p.y < -30) { p.y = H + 30; p.x = Math.random() * W; }
+      cx.globalAlpha = .5; cx.fillStyle = "#ff4fa8"; cx.font = p.sz + "px serif"; cx.fillText("♥", p.x, p.y);
+    } else {
+      p.t += .03; cx.globalAlpha = .4 + .6 * Math.abs(Math.sin(p.t)); cx.fillStyle = "#ffd99a";
+      cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 7); cx.fill();
+    }
+  });
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) requestAnimationFrame(draw);
+}
+draw();
+const music = document.getElementById("music");
+music.play().catch(err => console.log(err));
+</script>
+</body>
+</html>
